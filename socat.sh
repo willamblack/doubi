@@ -68,9 +68,9 @@ addSocat(){
 	while true
 	do
 		echo -e "请输入 Socat 的 本地监听端口 [1-65535]"
-		stty erase '^H' && read -p "(默认端口: 23333):" Socatport
+		read -e -p "(默认端口: 23333):" Socatport
 		[[ -z "$Socatport" ]] && Socatport="23333"
-		echo $[${Socatport}+0] &>/dev/null
+		echo $((${Socatport}+0)) &>/dev/null
 		if [[ $? -eq 0 ]]; then
 			if [[ ${Socatport} -ge 1 ]] && [[ ${Socatport} -le 65535 ]]; then
 				echo
@@ -90,9 +90,9 @@ addSocat(){
 	while true
 	do
 		echo -e "请输入 Socat 远程被转发 端口 [1-65535]"
-		stty erase '^H' && read -p "(默认端口: ${Socatport}):" Socatport1
+		read -e -p "(默认端口: ${Socatport}):" Socatport1
 		[[ -z "$Socatport1" ]] && Socatport1=${Socatport}
-		echo $[${Socatport1}+0] &>/dev/null
+		echo $((${Socatport1}+0)) &>/dev/null
 		if [[ $? -eq 0 ]]; then
 			if [[ ${Socatport1} -ge 1 ]] && [[ ${Socatport1} -le 65535 ]]; then
 				echo
@@ -109,7 +109,7 @@ addSocat(){
 		fi
 	done
 # 设置欲转发 IP
-	stty erase '^H' && read -p "请输入 Socat 远程被转发 IP:" socatip
+	read -e -p "请输入 Socat 远程被转发 IP:" socatip
 	[[ -z "${socatip}" ]] && echo "取消..." && exit 1
 	echo
 	echo "——————————————————————————————"
@@ -122,7 +122,7 @@ addSocat(){
 	echo "2. UDP"
 	echo "3. TCP+UDP"
 	echo
-	stty erase '^H' && read -p "(默认: TCP+UDP):" socattype_num
+	read -e -p "(默认: TCP+UDP):" socattype_num
 	[[ -z "${socattype_num}" ]] && socattype_num="3"
 	if [[ ${socattype_num} = "1" ]]; then
 		socattype="TCP"
@@ -144,7 +144,7 @@ addSocat(){
 	echo -e "	转发类型\t : ${Red_background_prefix} ${socattype} ${Font_color_suffix}"
 	echo "——————————————————————————————"
 	echo
-	stty erase '^H' && read -p "请按任意键继续，如有配置错误请使用 Ctrl+C 退出。" var
+	read -e -p "请按任意键继续，如有配置错误请使用 Ctrl+C 退出。" var
 	startSocat
 	# 获取IP
 	ip=`wget -qO- -t1 -T2 ipinfo.io/ip`
@@ -239,9 +239,9 @@ delSocat(){
 	do
 	# 列出 Socat
 	listSocat
-	stty erase '^H' && read -p "请输入数字 来选择要终止的 Socat 进程:" stopsocat
+	read -e -p "请输入数字 来选择要终止的 Socat 进程:" stopsocat
 	[[ -z "${stopsocat}" ]] && stopsocat="0"
-	echo $[${stopsocat}+0] &>/dev/null
+	echo $((${stopsocat}+0)) &>/dev/null
 	if [[ $? -eq 0 ]]; then
 		if [[ ${stopsocat} -ge 1 ]] && [[ ${stopsocat} -le ${socat_total} ]]; then
 			# 删除开机启动
@@ -264,7 +264,7 @@ delSocat(){
 			PID=`ps -ef | grep socat | grep -v grep | grep -v "socat.sh" | awk '{print $2}' | sed -n "${stopsocat}p"`
 			kill -2 ${PID}
 			sleep 2s
-			socat_total1=$[ $socat_total - 1 ]
+			socat_total1=$((${socat_total}-1))
 			socat_total=`ps -ef | grep socat | grep -v grep | grep -v "socat.sh" | wc -l`
 			if [[ ${socat_total} != ${socat_total1} ]]; then
 				echo -e "${Error} Socat 停止失败 !" && exit 1
@@ -289,7 +289,7 @@ tailSocat(){
 uninstallSocat(){
 	check_socat
 	echo "确定要卸载 Socat ? [y/N]"
-	stty erase '^H' && read -p "(默认: n):" unyn
+	read -e -p "(默认: n):" unyn
 	[[ -z ${unyn} ]] && unyn="n"
 	if [[ ${unyn} == [Yy] ]]; then
 		PID=$(ps -ef | grep "socat" | grep -v grep | grep -v ".sh" |awk '{print $2}')
@@ -330,7 +330,7 @@ else
 	echo -e " 当前状态: ${Red_font_prefix}未安装${Font_color_suffix}"
 fi
 echo
-stty erase '^H' && read -p " 请输入数字 [0-9]:" num
+read -e -p " 请输入数字 [0-9]:" num
 case "$num" in
 	0)
 	Update_Shell
